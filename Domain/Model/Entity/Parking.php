@@ -46,19 +46,34 @@ class Parking
 
 
     /**
+     * @return int|null
+     */
+    public function getPriceDay(): ?int
+    {
+        return $this->priceDay->getPrice();
+    }
+
+
+    /**
      * @param ParkingPrice $priceTime
      */
     public function setPriceTime(ParkingPrice $priceTime): void
     {
-        if ($this->priceDay->getPrice() == null) {
+        if ($this->getPriceDay() == null) {
             throw new DomainException('日貸し料金を設定しないと、時間貸しの料金は設定できません');
         }
 
-        if (($priceTime->getPrice() * 4 * 12) < $this->priceDay->getPrice()) {
+        if ($this->IsValidPriceTime($priceTime)) {
             throw new DomainException('日貸で借りた方が得な値にしてください');
         }
 
         $this->priceTime = $priceTime;
+    }
+
+
+    public function IsValidPriceTime(ParkingPrice $priceTime)
+    {
+        return ($priceTime->getPrice() * 4 * 12) < $this->priceDay->getPrice();
     }
 
 }

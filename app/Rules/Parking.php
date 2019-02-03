@@ -2,7 +2,6 @@
 
 namespace App\Rules;
 
-use Domain\Exception\DomainException;
 use Domain\Model\ValueObject\ParkingId;
 use Domain\Model\ValueObject\ParkingPrice;
 use Illuminate\Contracts\Validation\Rule;
@@ -33,11 +32,13 @@ class Parking implements Rule
         $parking = new \Domain\Model\Entity\Parking(new ParkingId(null));
         $parking->setPriceDay(new ParkingPrice(request()->price_day));
 
-        try {
-            $parking->setPriceTime(new ParkingPrice($value));
-        } catch (DomainException $e) {
-            $this->massage = $e->getMessage();
+        if ($parking->getPriceDay() == null) {
+            $this->massage = '時間貸しの料金のみを設定することはできません';
+            return false;
+        }
 
+        if ($parking->IsValidPriceTime(new ParkingPrice($value))) {
+            $this->massage = '時間貸しは割高にするようにして下さい';
             return false;
         }
 
