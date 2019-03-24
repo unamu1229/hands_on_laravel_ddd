@@ -6,8 +6,12 @@ use App\Events\OrderShipped;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendShipmentNotification
+class SendShipmentNotification implements ShouldQueue
 {
+
+    // これを設定しないと非同期のキューでリスナが実行されない
+    public $connection = 'database';
+
     /**
      * Create the event listener.
      *
