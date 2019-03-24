@@ -34,10 +34,8 @@ class ProcessPodcast implements ShouldQueue
         // テキストファイル作成
         $file = sprintf('%s/%s.txt', storage_path('texts'), date('Q-Ymd-His'));
         touch($file);
-        for($i=0; $i< 3000; $i++ ) {
-            $current = file_get_contents($file);
-            $current .= $i;
-            file_put_contents($file, $current);
-        }
+        sleep(10);
+        file_put_contents($file, $this->param);
+
     }
 }

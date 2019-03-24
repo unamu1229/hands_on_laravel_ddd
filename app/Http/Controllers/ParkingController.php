@@ -16,7 +16,8 @@ class ParkingController extends Controller
 
     public function create(ParkingCreateRequest $parkingCreateRequest)
     {
-        $this->dispatch(new ProcessPodcast($parkingCreateRequest->price_day));
+        ProcessPodcast::dispatch($parkingCreateRequest->price_day);
+     //   $this->dispatch(new ProcessPodcast($parkingCreateRequest->price_day));
         return redirect(route('parking.entry'));
     }
 }
