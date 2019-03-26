@@ -5,6 +5,7 @@ namespace src\Domain\Model\Service;
 
 
 use Carbon\Carbon;
+use src\Domain\Model\Event\ReservationParking;
 use src\Domain\Model\ValueObject\ParkingId;
 use src\Domain\Model\ValueObject\UserId;
 use src\Infrastructure\ReservationRepository;
@@ -24,6 +25,7 @@ class ReserveParking
         if ($reservation->date()->eq($reserveDate)) {
             return false;
         }
+        event(new \App\Events\ReserveParking(new ReservationParking($parkingId, $userId, $reserveDate)));
         return true;
     }
 }

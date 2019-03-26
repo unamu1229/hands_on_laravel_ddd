@@ -16,4 +16,9 @@ class ReservationRepository
     {
         return new Reservation(new ReservationId(uniqid()), $parkingId, new UserId(uniqid()), (new Carbon())->subDay());
     }
+
+    public function save(Reservation $reservation)
+    {
+        return true;
+    }
 }
