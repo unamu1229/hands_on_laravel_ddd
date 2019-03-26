@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use Domain\Model\Entity\Parking;
+use src\Domain\Model\Entity\Parking;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;

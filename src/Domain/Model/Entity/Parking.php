@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Domain\Model\Entity;
+namespace src\Domain\Model\Entity;
 
 
-use Domain\Exception\DomainException;
-use Domain\Model\ValueObject\ParkingId;
-use Domain\Model\ValueObject\ParkingPrice;
+use src\Domain\Exception\DomainException;
+use src\Domain\Model\ValueObject\ParkingId;
+use src\Domain\Model\ValueObject\ParkingPrice;
 
 class Parking
 {

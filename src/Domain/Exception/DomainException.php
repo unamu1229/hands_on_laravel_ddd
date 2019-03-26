@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Domain\Exception;
+namespace src\Domain\Exception;
 
 
 class DomainException extends \LogicException

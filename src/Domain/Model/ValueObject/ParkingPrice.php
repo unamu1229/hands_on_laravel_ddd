@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Domain\Model\ValueObject;
+namespace src\Domain\Model\ValueObject;
 
 
 class ParkingPrice

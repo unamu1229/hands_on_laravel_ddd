@@ -3,8 +3,8 @@
 namespace Tests\Unit;
 
 use App\Events\OrderShipped;
-use Domain\Model\Entity\Parking;
-use Domain\Model\ValueObject\ParkingId;
+use src\Domain\Model\Entity\Parking;
+use src\Domain\Model\ValueObject\ParkingId;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

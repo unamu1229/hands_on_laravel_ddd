@@ -2,8 +2,8 @@
 
 namespace App\Rules;
 
-use Domain\Model\ValueObject\ParkingId;
-use Domain\Model\ValueObject\ParkingPrice;
+use src\Domain\Model\ValueObject\ParkingId;
+use src\Domain\Model\ValueObject\ParkingPrice;
 use Illuminate\Contracts\Validation\Rule;
 
 class Parking implements Rule
