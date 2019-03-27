@@ -9,6 +9,8 @@ use src\Domain\Model\Event\ReservationParking;
 use src\Domain\Model\ValueObject\ParkingId;
 use src\Domain\Model\ValueObject\UserId;
 use src\Infrastructure\ReservationRepository;
+use src\Domain\Model\Entity\Reservation;
+use src\Domain\Model\ValueObject\ReservationId;
 
 class ReserveParking
 {
@@ -21,10 +23,12 @@ class ReserveParking
 
     public function reserve(ParkingId $parkingId, UserId $userId, Carbon $reserveDate)
     {
-        $reservation = $this->reservationsRepo->reservationByParkingId($parkingId);
-        if ($reservation->date()->eq($reserveDate)) {
+        $sameParkingReservation = $this->reservationsRepo->reservationByParkingId($parkingId);
+        if ($sameParkingReservation->date()->eq($reserveDate)) {
             return false;
         }
-        return true;
+        $reservation = new Reservation(new ReservationId(uniqid()), $parkingId, $userId, $reserveDate);
+        $this->reservationsRepo->save($reservation);
+        return $reservation->getId();
     }
 }

@@ -22,7 +22,7 @@ class ReservationService
 
     public function reserveParking(ParkingId $parkingId, UserId $userId, Carbon $reserveDate)
     {
-        $this->reserveParking->reserve($parkingId, $userId, $reserveDate);
+        $reservationId = $this->reserveParking->reserve($parkingId, $userId, $reserveDate);
         event(new \App\Events\ReserveParking(new ReservationParking($parkingId, $userId, $reserveDate)));
         return true;
     }

@@ -31,4 +31,14 @@ class Reservation
     {
         return $this->date;
     }
+
+    /**
+     * @return ReservationId
+     */
+    public function getId(): ReservationId
+    {
+        return $this->id;
+    }
+
+
 }
