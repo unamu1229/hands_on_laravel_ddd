@@ -25,7 +25,6 @@ class ReserveParking
         if ($reservation->date()->eq($reserveDate)) {
             return false;
         }
-        event(new \App\Events\ReserveParking(new ReservationParking($parkingId, $userId, $reserveDate)));
         return true;
     }
 }
