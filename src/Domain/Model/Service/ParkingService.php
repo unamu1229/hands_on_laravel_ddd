@@ -12,7 +12,7 @@ use src\Infrastructure\ReservationRepository;
 use src\Domain\Model\Entity\Reservation;
 use src\Domain\Model\ValueObject\ReservationId;
 
-class ReserveParking
+class ParkingService
 {
     public $reservationsRepo;
 

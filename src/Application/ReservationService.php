@@ -4,7 +4,7 @@
 namespace src\Application;
 
 
-use src\Domain\Model\Service\ReserveParking;
+use src\Domain\Model\Service\ParkingService;
 use src\Domain\Model\ValueObject\ParkingId;
 use src\Domain\Model\ValueObject\UserId;
 use Carbon\Carbon;
@@ -15,7 +15,7 @@ class ReservationService
 
     private $reserveParking;
 
-    public function __construct(ReserveParking $reserveParking)
+    public function __construct(ParkingService $reserveParking)
     {
         $this->reserveParking = $reserveParking;
     }
