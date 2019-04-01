@@ -22,7 +22,8 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\SendShipmentNotification',
         ],
         'App\Events\ReserveParking' => [
-            'App\Listeners\SendReserveNotification'
+            'App\Listeners\SendReserveNotification',
+            'App\Listeners\StoredEvent'
         ]
     ];
 

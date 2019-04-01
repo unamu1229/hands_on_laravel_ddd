@@ -10,11 +10,11 @@ class ParkingId
 
     public function __construct($id)
     {
-        $this->id;
+        $this->id = $id;
     }
 
     public function getId()
     {
-        $this->id;
+        return $this->id;
     }
 }
