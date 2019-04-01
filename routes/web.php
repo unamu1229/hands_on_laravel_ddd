@@ -11,10 +11,6 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::get('/parking/entry', 'ParkingController@entry')->name('parking.entry');
 
 Route::post('/parking/create', 'ParkingController@create')->name('parking.create');
