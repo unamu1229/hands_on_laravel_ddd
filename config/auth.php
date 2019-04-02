@@ -43,7 +43,7 @@ return [
 
         'api' => [
             'driver' => 'token',
-            'provider' => 'users',
+            'provider' => 'api_tokens',
         ],
     ],
 
@@ -74,6 +74,11 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+
+        'api_tokens' => [
+            'driver' => 'database',
+            'table' => 'api_tokens'
+        ]
     ],
 
     /*
