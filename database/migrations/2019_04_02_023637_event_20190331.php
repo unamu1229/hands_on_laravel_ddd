@@ -14,10 +14,10 @@ class Event20190331 extends Migration
     public function up()
     {
         Schema::create('events', function (Blueprint $table) {
-           $table->increments('id');
-           $table->mediumText('body');
-           $table->string('type_name');
-           $table->timestamp('occurred_on');
+            $table->increments('id');
+            $table->mediumText('body');
+            $table->string('type_name');
+            $table->timestamp('occurred_on');
         });
     }
 
