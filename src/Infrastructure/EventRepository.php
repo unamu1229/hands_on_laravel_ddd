@@ -5,6 +5,7 @@ namespace src\Infrastructure;
 
 
 use App\Models\Event;
+use Carbon\Carbon;
 use src\Application\StoredEvent;
 
 class EventRepository
@@ -24,4 +25,33 @@ class EventRepository
         $event->occurred_on = $storedEvent->getOccurredOn();
         $event->save();
     }
+
+
+    /**
+     * @param string $typeName
+     * @param int $amount
+     * @return StoredEvent[]
+     */
+    public function currentEvents(string $typeName, int $amount)
+    {
+        $tmpCurrentEvents = $this->event->newQuery()->where('type_name', '=', $typeName)
+            ->orderBy('id', 'desc')->limit($amount)->get();
+
+        if ($tmpCurrentEvents->isEmpty()) {
+            return [];
+        }
+
+        $currentEvents = [];
+        foreach ($tmpCurrentEvents->reverse() as $tmpCurrentEvent) {
+            $currentEvents[] = new StoredEvent(
+                $tmpCurrentEvent->id,
+                $tmpCurrentEvent->body,
+                $tmpCurrentEvent->type_name,
+                new Carbon($tmpCurrentEvent->occured_on)
+            );
+        }
+
+        return $currentEvents;
+    }
+
 }

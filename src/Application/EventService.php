@@ -27,4 +27,21 @@ class EventService
         $this->eventRepo->save($event);
     }
 
+
+
+    public function currentEvents()
+    {
+        $currentEvents = $this->eventRepo->currentEvents('src\Domain\Model\Event\ReservationParking', 20);
+
+        if (count($currentEvents) == 0) {
+            return [];
+        }
+
+        return [
+            'current_events' => $currentEvents,
+            'start' => reset($currentEvents)->getId(),
+            'current' => end($currentEvents)->getId(),
+        ];
+    }
+
 }
