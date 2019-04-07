@@ -27,18 +27,22 @@ class EventApiTest extends TestCase
     {
         // ApiTokenを設定しておく
         $this->seed(\ApiTokensSeeder::class);
-        // イベントを作成しておく
-        $this->reservationService->reserveParking(
-            new ParkingId(uniqid()),
-            new UserId(uniqid()),
-            new Carbon()
-        );
+
+        for ($i = 1; $i <=40; $i++) {
+            // イベントを作成しておく
+            $this->reservationService->reserveParking(
+                new ParkingId(uniqid()),
+                new UserId(uniqid()),
+                new Carbon()
+            );
+        }
 
         $response = $this->get(route('reserve.reserve_parking_events'), ['Authorization' => 'Bearer abcd1234']);
         $response->assertStatus(200);
-        $this->assertSame(
-            'http://localhost/api/reserve/reserve_parking_events/1,1; rel=self',
-            $response->headers->get('Link')
+
+        $endPoint = route('reserve.reserve_parking_events');
+        $this->assertSame("<{$endPoint}/41,60>; rel=self",
+            $response->headers->get('Link-self')
         );
     }
 

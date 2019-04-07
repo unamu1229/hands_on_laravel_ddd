@@ -42,6 +42,12 @@ class EventServiceTest extends TestCase
     public function testCurrentEvents()
     {
         $this->seed(\ApiTokensSeeder::class);
+        // イベントを作成しておく
+        $this->reservationService->reserveParking(
+            new ParkingId(uniqid()),
+            new UserId(uniqid()),
+            new Carbon()
+        );
         
         $currentEvents = $this->eventService->currentEvents();
 
