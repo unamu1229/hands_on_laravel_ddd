@@ -20,6 +20,16 @@ class ReserveController extends Controller
     public function reserveParkingEvents()
     {
         $currentEvents = $this->eventService->currentEvents();
+
+        if (count($currentEvents) == 0) {
+            return response([])
+                ->header(
+                    'Link',
+                    route(
+                        'reserve.reserve_parking_events') . "/1,20; rel=self"
+                );
+        }
+
         $events = [];
         /** @var StoredEvent $currentEvent */
         foreach ($currentEvents['current_events'] as $currentEvent) {
@@ -29,11 +39,14 @@ class ReserveController extends Controller
             );
         }
 
+        $endPoint = route(
+            'reserve.reserve_parking_events');
+        $relSelf = "<{$endPoint}/{$currentEvents['rel_self']['start']},{$currentEvents['rel_self']['end']}>; rel=self";
+        $relPrevious = "<{$endPoint}/{$currentEvents['rel_previous']['start']},{$currentEvents['rel_previous']['end']}>; rel=previous";
+
         return response($events)
-            ->header(
-                'Link',
-                route('reserve.reserve_parking_events') . "/{$currentEvents['start']},{$currentEvents['current']}; rel=self"
-            );
+            ->header('Link-self', $relSelf)
+            ->header('Link-previous', $relPrevious);
     }
 
     public function failAuth()

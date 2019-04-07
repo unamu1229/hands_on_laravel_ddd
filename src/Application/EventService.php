@@ -28,7 +28,9 @@ class EventService
     }
 
 
-
+    /**
+     * @return array
+     */
     public function currentEvents()
     {
         $currentEvents = $this->eventRepo->currentEvents('src\Domain\Model\Event\ReservationParking', 20);
@@ -37,10 +39,18 @@ class EventService
             return [];
         }
 
+        $relSelfStart = round(end($currentEvents)->getId() / 20) * 20 + 1;
+        $relSelfEnd = $relSelfStart + (20 - 1);
         return [
             'current_events' => $currentEvents,
-            'start' => reset($currentEvents)->getId(),
-            'current' => end($currentEvents)->getId(),
+            'rel_self' => [
+                'start' => $relSelfStart,
+                'end' => $relSelfEnd,
+            ],
+            'rel_previous' => [
+                'start' => $relSelfStart - 20,
+                'end' => $relSelfEnd - 20
+            ]
         ];
     }
 
