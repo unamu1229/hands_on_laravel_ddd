@@ -6,6 +6,7 @@ namespace src\Infrastructure;
 
 use App\Models\Event;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use src\Application\StoredEvent;
 
 class EventRepository
@@ -34,24 +35,37 @@ class EventRepository
      */
     public function currentEvents(string $typeName, int $amount)
     {
-        $tmpCurrentEvents = $this->event->newQuery()->where('type_name', '=', $typeName)
+        $eventData = $this->event->newQuery()->where('type_name', '=', $typeName)
             ->orderBy('id', 'desc')->limit($amount)->get();
 
-        if ($tmpCurrentEvents->isEmpty()) {
+        if ($eventData->isEmpty()) {
             return [];
         }
 
-        $currentEvents = [];
-        foreach ($tmpCurrentEvents->reverse() as $tmpCurrentEvent) {
-            $currentEvents[] = new StoredEvent(
-                $tmpCurrentEvent->id,
-                $tmpCurrentEvent->body,
-                $tmpCurrentEvent->type_name,
-                new Carbon($tmpCurrentEvent->occured_on)
+        return $this->convertEvents($eventData->reverse());
+    }
+
+
+    public function rangeEvents(int $start, int $end)
+    {
+        $eventData = $this->event->newQuery()->whereBetween('id', [$start, $end])->get();
+        return $this->convertEvents($eventData);
+    }
+
+
+    private function convertEvents(Collection $events)
+    {
+        $storedEvents = [];
+        foreach ($events as $event) {
+            $storedEvents[] = new StoredEvent(
+                $event->id,
+                $event->body,
+                $event->type_name,
+                new Carbon($event->occured_on)
             );
         }
 
-        return $currentEvents;
+        return $storedEvents;
     }
 
 }

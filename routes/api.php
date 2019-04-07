@@ -16,5 +16,8 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/reserve/reserve_parking_events', 'ReserveController@reserveParkingEvents')
     ->name('reserve.reserve_parking_events');
 
+Route::middleware('auth:api')->get('/reserve/reserve_parking_events/{start},{end}', 'ReserveController@reserveParkingRange')
+    ->name('reserve.reserve_parking_events_range');
+
 // apiの認証に失敗した時のリダイレクト先にとりあえず設定
 Route::get('/api/auth', 'ReserveController@failAuth')->name('login');

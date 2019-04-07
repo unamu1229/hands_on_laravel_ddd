@@ -33,23 +33,38 @@ class EventService
      */
     public function currentEvents()
     {
-        $currentEvents = $this->eventRepo->currentEvents('src\Domain\Model\Event\ReservationParking', 20);
+        $storedEvents = $this->eventRepo->currentEvents('src\Domain\Model\Event\ReservationParking', 20);
 
-        if (count($currentEvents) == 0) {
+        if (count($storedEvents) == 0) {
             return [];
         }
 
-        $relSelfStart = round(end($currentEvents)->getId() / 20) * 20 + 1;
-        $relSelfEnd = $relSelfStart + (20 - 1);
+        $start = round(end($storedEvents)->getId() / 20) * 20 + 1;
+        $end = $start + (20 - 1);
+
+        return $this->makeEventsFormat($storedEvents, $start, $end);
+    }
+
+
+    public function rangeEvents(int $start, int $end)
+    {
+        $storedEvents = $this->eventRepo->rangeEvents($start, $end);
+
+        return $this->makeEventsFormat($storedEvents, $start, $end);
+    }
+
+
+    private function makeEventsFormat($storedEvents, int $start, int $end)
+    {
         return [
-            'current_events' => $currentEvents,
+            'events' => $storedEvents,
             'rel_self' => [
-                'start' => $relSelfStart,
-                'end' => $relSelfEnd,
+                'start' => $start,
+                'end' => $end
             ],
             'rel_previous' => [
-                'start' => $relSelfStart - 20,
-                'end' => $relSelfEnd - 20
+                'start' => $start - 20,
+                'end' => $end - 20
             ]
         ];
     }

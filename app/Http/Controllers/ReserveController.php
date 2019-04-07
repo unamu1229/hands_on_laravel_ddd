@@ -21,36 +21,46 @@ class ReserveController extends Controller
     {
         $currentEvents = $this->eventService->currentEvents();
 
-        if (count($currentEvents) == 0) {
-            return response([])
-                ->header(
-                    'Link',
-                    route(
-                        'reserve.reserve_parking_events') . "/1,20; rel=self"
-                );
-        }
+        return $this->makeResponse($currentEvents);
+    }
 
-        $events = [];
-        /** @var StoredEvent $currentEvent */
-        foreach ($currentEvents['current_events'] as $currentEvent) {
-            $events[] = array_merge(
-                ['event_id' => $currentEvent->getId()],
-                json_decode($currentEvent->getBody(), true)
-            );
-        }
+    public function reserveParkingRange($start, $end)
+    {
+        $events = $this->eventService->rangeEvents($start, $end);
 
-        $endPoint = route(
-            'reserve.reserve_parking_events');
-        $relSelf = "<{$endPoint}/{$currentEvents['rel_self']['start']},{$currentEvents['rel_self']['end']}>; rel=self";
-        $relPrevious = "<{$endPoint}/{$currentEvents['rel_previous']['start']},{$currentEvents['rel_previous']['end']}>; rel=previous";
-
-        return response($events)
-            ->header('Link-self', $relSelf)
-            ->header('Link-previous', $relPrevious);
+        return $this->makeResponse($events);
     }
 
     public function failAuth()
     {
         return response()->json(['auth'=>'fail']);
+    }
+
+    private function makeResponse(array $events)
+    {
+        $endPoint = route(
+            'reserve.reserve_parking_events');
+
+        if (count($events) == 0) {
+            return response([])
+                ->header('Link-self', "<{$endPoint}/1,20>; rel=self");
+        }
+
+        $body = [];
+        /** @var StoredEvent $currentEvent */
+        foreach ($events['events'] as $currentEvent) {
+            $body[] = array_merge(
+                ['event_id' => $currentEvent->getId()],
+                json_decode($currentEvent->getBody(), true)
+            );
+        }
+
+
+        $relSelf = "<{$endPoint}/{$events['rel_self']['start']},{$events['rel_self']['end']}>; rel=self";
+        $relPrevious = "<{$endPoint}/{$events['rel_previous']['start']},{$events['rel_previous']['end']}>; rel=previous";
+
+        return response($body)
+            ->header('Link-self', $relSelf)
+            ->header('Link-previous', $relPrevious);
     }
 }
