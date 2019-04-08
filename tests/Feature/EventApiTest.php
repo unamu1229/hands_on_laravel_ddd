@@ -17,18 +17,26 @@ class EventApiTest extends TestCase
     /** @var ReservationService */
     private $reservationService;
 
+    private $endPoint;
+
+
     public function setUp()
     {
         parent::setUp();
         $this->reservationService = $this->app->make(ReservationService::class);
+        $this->endPoint = route('reserve.reserve_parking_events');
+
+        $this->seed(\ApiTokensSeeder::class);
     }
 
-    public function testReservationParkingEvents()
+    /**
+     * @param $eventAmount
+     * @param $range
+     * @dataProvider provideTestReservationParkingEvents
+     */
+    public function testReservationParkingEvents($eventAmount, $range)
     {
-        // ApiTokenを設定しておく
-        $this->seed(\ApiTokensSeeder::class);
-
-        for ($i = 1; $i <=40; $i++) {
+        for ($i = 1; $i <=$eventAmount; $i++) {
             // イベントを作成しておく
             $this->reservationService->reserveParking(
                 new ParkingId(uniqid()),
@@ -40,10 +48,20 @@ class EventApiTest extends TestCase
         $response = $this->get(route('reserve.reserve_parking_events'), ['Authorization' => 'Bearer abcd1234']);
         $response->assertStatus(200);
 
-        $endPoint = route('reserve.reserve_parking_events');
-        $this->assertSame("<{$endPoint}/41,60>; rel=self",
+        $this->assertSame(
+            "<{$this->endPoint}/{$range}>; rel=self",
             $response->headers->get('Link-self')
         );
+    }
+
+
+    public function provideTestReservationParkingEvents()
+    {
+        return [
+            [40, '21,40'],
+            [0, '1,20'],
+            [1, '41,60']
+        ];
     }
 
 
@@ -52,8 +70,6 @@ class EventApiTest extends TestCase
      */
     public function testReservationParkingEventCaseNoEvent()
     {
-        // ApiTokenを設定しておく
-        $this->seed(\ApiTokensSeeder::class);
         $response = $this->get(route('reserve.reserve_parking_events'), ['Authorization' => 'Bearer abcd1234']);
         $response->assertStatus(200);
     }
@@ -61,8 +77,6 @@ class EventApiTest extends TestCase
 
     public function testReservationParkingEventRange()
     {
-        // ApiTokenを設定しておく
-        $this->seed(\ApiTokensSeeder::class);
 
         for ($i = 1; $i <=50; $i++) {
             // イベントを作成しておく
@@ -73,7 +87,19 @@ class EventApiTest extends TestCase
             );
         }
 
-        $response = $this->get(route('reserve.reserve_parking_events_range', ['start' => 20, 'end' => 40]), ['Authorization' => 'Bearer abcd1234']);
+        $response = $this->get(route('reserve.reserve_parking_events_range', ['start' => 21, 'end' => 40]), ['Authorization' => 'Bearer abcd1234']);
         $response->assertStatus(200);
+        $this->assertSame(
+            "<{$this->endPoint}/21,40>; rel=self",
+            $response->headers->get('Link-self')
+        );
+        $this->assertSame(
+            "<{$this->endPoint}/1,20>; rel=previous",
+            $response->headers->get('Link-previous')
+        );
+        $this->assertSame(
+            "<{$this->endPoint}/41,60>; rel=next",
+            $response->headers->get('Link-next')
+        );
     }
 }

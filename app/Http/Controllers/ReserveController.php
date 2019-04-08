@@ -59,8 +59,15 @@ class ReserveController extends Controller
         $relSelf = "<{$endPoint}/{$events['rel_self']['start']},{$events['rel_self']['end']}>; rel=self";
         $relPrevious = "<{$endPoint}/{$events['rel_previous']['start']},{$events['rel_previous']['end']}>; rel=previous";
 
-        return response($body)
+        $response = response($body)
             ->header('Link-self', $relSelf)
             ->header('Link-previous', $relPrevious);
+
+        if (array_key_exists('rel_next', $events)) {
+            $relNext = "<{$endPoint}/{$events['rel_next']['start']},{$events['rel_next']['end']}>; rel=next";
+            $response = $response->header('Link-next', $relNext);
+        }
+
+        return $response;
     }
 }

@@ -9,6 +9,8 @@ use src\Infrastructure\EventRepository;
 
 class EventService
 {
+
+    const EVENT_UNIT = 20;
     private $eventRepo;
 
     public function __construct(EventRepository $eventRepository)
@@ -33,16 +35,16 @@ class EventService
      */
     public function currentEvents()
     {
-        $storedEvents = $this->eventRepo->currentEvents('src\Domain\Model\Event\ReservationParking', 20);
+        $storedEvents = $this->eventRepo->currentEvents('src\Domain\Model\Event\ReservationParking', self::EVENT_UNIT);
 
         if (count($storedEvents) == 0) {
             return [];
         }
 
-        $start = round(end($storedEvents)->getId() / 20) * 20 + 1;
-        $end = $start + (20 - 1);
+        $start = floor((end($storedEvents)->getId() - 1) / self::EVENT_UNIT) * self::EVENT_UNIT + 1;
+        $end = $start + (self::EVENT_UNIT - 1);
 
-        return $this->makeEventsFormat($storedEvents, $start, $end);
+        return $this->makeEventsFormat($storedEvents, $start, $end, false);
     }
 
 
@@ -50,23 +52,39 @@ class EventService
     {
         $storedEvents = $this->eventRepo->rangeEvents($start, $end);
 
-        return $this->makeEventsFormat($storedEvents, $start, $end);
+        $currentEvents = $this->eventRepo->currentEvents('src\Domain\Model\Event\ReservationParking', self::EVENT_UNIT);
+
+        $isNext = false;
+        if ($end < end($currentEvents)->getId()) {
+            $isNext = true;
+        }
+
+        return $this->makeEventsFormat($storedEvents, $start, $end, $isNext);
     }
 
 
-    private function makeEventsFormat($storedEvents, int $start, int $end)
+    private function makeEventsFormat($storedEvents, int $start, int $end, bool $isNext)
     {
-        return [
+        $events = [
             'events' => $storedEvents,
             'rel_self' => [
                 'start' => $start,
                 'end' => $end
             ],
             'rel_previous' => [
-                'start' => $start - 20,
-                'end' => $end - 20
+                'start' => $start - self::EVENT_UNIT,
+                'end' => $end - self::EVENT_UNIT
             ]
         ];
+
+        if ($isNext) {
+            $events['rel_next'] = [
+                'start' => $start + self::EVENT_UNIT,
+                'end' => $end + self::EVENT_UNIT
+            ];
+        }
+
+        return $events;
     }
 
 }
